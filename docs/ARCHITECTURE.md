@@ -15,6 +15,8 @@ src/
   features/
     quran/                     # api.ts (external content), queries.ts (our DB
                                 # reads), actions.ts (our DB writes), components/
+    tafsir/                     # api.ts (external content), actions.ts (lazy
+                                # per-ayah fetch), components/tafsir-panel.tsx
     auth/                       # actions.ts (Supabase auth), components/
   components/layout/           # site header, locale switcher, user menu
   i18n/                         # next-intl routing/navigation/request config
@@ -49,6 +51,23 @@ verses. The base URL is configurable via `QURAN_API_BASE_URL` (used in this
 repo to point at a local mock during development, since this sandbox's
 outbound network is restricted to an allowlist that excludes
 `api.quran.com`).
+
+### Tafsir
+
+Tafsir (commentary) follows the exact same pattern as Quran text:
+`src/features/tafsir/api.ts` fetches from the Quran.com tafsir endpoint,
+validates the response with Zod, and throws `TafsirApiError` on failure.
+It defaults to Tafsir Ibn Kathir (abridged, English) via a single named
+constant (`DEFAULT_TAFSIR_RESOURCE_ID`) — swap it in one place, or extend
+`getTafsir` to accept a resource id, once multiple tafsirs are needed.
+
+Unlike verse text/translation (fetched once per surah on the server),
+tafsir is fetched **lazily per ayah** on demand — it's much longer than a
+translation, and most readers won't expand it for every verse. The reader
+exposes a "Tafsir" toggle per ayah (`features/tafsir/components/
+tafsir-panel.tsx`) backed by a server action (`getTafsirAction`), with its
+own loading skeleton and inline retry on failure, mirroring the bookmark
+button's error handling.
 
 ### i18n and RTL
 

@@ -64,6 +64,12 @@
       "nextSurah": "Next surah"
     }
   },
+  "Tafsir": {
+    "toggle": "Tafsir",
+    "error": "Couldn't load the tafsir. Please try again.",
+    "retry": "Retry",
+    "source": "Source: {name}"
+  },
   "Common": {
     "loading": "Loading…",
     "retry": "Try again",

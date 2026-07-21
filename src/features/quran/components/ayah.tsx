@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Separator } from "@/design-system/components/separator";
 import { BookmarkButton } from "@/features/quran/components/bookmark-button";
+import { TafsirPanel } from "@/features/tafsir/components/tafsir-panel";
 import type { Verse } from "@/features/quran/types";
 
 export function Ayah({
@@ -54,6 +55,9 @@ export function Ayah({
           {verse.translation}
         </p>
       )}
+
+      <TafsirPanel surahNumber={surahNumber} ayahNumber={verse.verseNumber} />
+
       <Separator />
     </article>
   );

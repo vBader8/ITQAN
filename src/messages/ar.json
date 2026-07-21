@@ -1,0 +1,87 @@
+{
+  "Metadata": {
+    "title": "إتقان — منصة التعلّم الإسلامي",
+    "description": "اقرأ القرآن الكريم وتدبّره مع الترجمات والإشارات المرجعية وتتبّع تقدّم القراءة."
+  },
+  "Nav": {
+    "home": "الرئيسية",
+    "quran": "القرآن",
+    "dashboard": "لوحتي",
+    "login": "تسجيل الدخول",
+    "signup": "إنشاء حساب",
+    "logout": "تسجيل الخروج",
+    "toggleLocale": "English"
+  },
+  "Home": {
+    "eyebrow": "إتقان",
+    "title": "اقرأ القرآن الكريم بوضوح وطمأنينة",
+    "subtitle": "الرسم العثماني، وترجمات موثوقة، وتجربة قراءة مصمَّمة لتعينك على التركيز.",
+    "cta": "ابدأ القراءة",
+    "secondaryCta": "أنشئ حسابًا مجانيًا"
+  },
+  "Auth": {
+    "Login": {
+      "title": "مرحبًا بعودتك",
+      "subtitle": "سجّل الدخول لمتابعة قراءتك.",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "submit": "تسجيل الدخول",
+      "submitting": "جارٍ تسجيل الدخول…",
+      "noAccount": "ليس لديك حساب؟",
+      "signUpLink": "أنشئ حسابًا"
+    },
+    "Signup": {
+      "title": "أنشئ حسابك",
+      "subtitle": "تابع تقدّم قراءتك وإشاراتك المرجعية.",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "submit": "إنشاء حساب",
+      "submitting": "جارٍ إنشاء الحساب…",
+      "haveAccount": "لديك حساب بالفعل؟",
+      "loginLink": "تسجيل الدخول",
+      "checkEmail": "تحقّق من بريدك الإلكتروني لتأكيد حسابك."
+    }
+  },
+  "Quran": {
+    "SurahList": {
+      "title": "القرآن الكريم",
+      "subtitle": "١١٤ سورة، مرتّبة كما في المصحف.",
+      "searchPlaceholder": "ابحث عن سورة…",
+      "ayahCount": "{count} آية",
+      "meccan": "مكية",
+      "medinan": "مدنية",
+      "continueReading": "متابعة القراءة",
+      "empty": "لا توجد سور مطابقة لبحثك."
+    },
+    "Reader": {
+      "showTranslation": "إظهار الترجمة",
+      "hideTranslation": "العربية فقط",
+      "bookmark": "أضف إشارة مرجعية لهذه الآية",
+      "bookmarked": "تمت الإضافة",
+      "bookmarkRequiresAuth": "سجّل الدخول لإضافة إشارات مرجعية",
+      "verse": "الآية {number}",
+      "previousSurah": "السورة السابقة",
+      "nextSurah": "السورة التالية"
+    }
+  },
+  "Common": {
+    "loading": "جارٍ التحميل…",
+    "retry": "أعد المحاولة",
+    "errorTitle": "حدث خطأ ما",
+    "errorDescription": "تعذّر تحميل هذا المحتوى. يرجى التحقق من اتصالك والمحاولة مرة أخرى.",
+    "requiredField": "هذا الحقل مطلوب",
+    "invalidEmail": "أدخل بريدًا إلكترونيًا صحيحًا",
+    "shortPassword": "يجب ألا تقل كلمة المرور عن ٨ أحرف"
+  },
+  "Dashboard": {
+    "title": "لوحتك",
+    "welcomeBack": "مرحبًا بعودتك، {name}",
+    "continueReading": "متابعة القراءة",
+    "noReadingTitle": "لم تبدأ القراءة بعد",
+    "bookmarks": "إشاراتك المرجعية",
+    "noBookmarksTitle": "لا توجد إشارات مرجعية بعد",
+    "noBookmarksDescription": "أضف إشارات مرجعية للآيات أثناء القراءة لتجدها هنا.",
+    "browseQuran": "تصفّح القرآن",
+    "bookmarkLabel": "سورة {surah} · آية {ayah}"
+  }
+}

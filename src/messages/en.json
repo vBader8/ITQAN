@@ -1,0 +1,87 @@
+{
+  "Metadata": {
+    "title": "ITQAN — Islamic Learning Platform",
+    "description": "Read, study, and reflect on the Quran with translations, bookmarks, and reading progress."
+  },
+  "Nav": {
+    "home": "Home",
+    "quran": "Quran",
+    "dashboard": "Dashboard",
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "toggleLocale": "العربية"
+  },
+  "Home": {
+    "eyebrow": "ITQAN",
+    "title": "Read the Quran with clarity and calm",
+    "subtitle": "Uthmani script, trusted translations, and a reading experience built to help you focus.",
+    "cta": "Start reading",
+    "secondaryCta": "Create a free account"
+  },
+  "Auth": {
+    "Login": {
+      "title": "Welcome back",
+      "subtitle": "Log in to continue your reading.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log in",
+      "submitting": "Logging in…",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up"
+    },
+    "Signup": {
+      "title": "Create your account",
+      "subtitle": "Track your reading progress and bookmarks.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "checkEmail": "Check your email to confirm your account."
+    }
+  },
+  "Quran": {
+    "SurahList": {
+      "title": "The Quran",
+      "subtitle": "114 surahs, in Mushaf order.",
+      "searchPlaceholder": "Search surahs…",
+      "ayahCount": "{count} verses",
+      "meccan": "Meccan",
+      "medinan": "Medinan",
+      "continueReading": "Continue reading",
+      "empty": "No surahs match your search."
+    },
+    "Reader": {
+      "showTranslation": "Show translation",
+      "hideTranslation": "Arabic only",
+      "bookmark": "Bookmark this verse",
+      "bookmarked": "Bookmarked",
+      "bookmarkRequiresAuth": "Log in to bookmark verses",
+      "verse": "Verse {number}",
+      "previousSurah": "Previous surah",
+      "nextSurah": "Next surah"
+    }
+  },
+  "Common": {
+    "loading": "Loading…",
+    "retry": "Try again",
+    "errorTitle": "Something went wrong",
+    "errorDescription": "We couldn't load this content. Please check your connection and try again.",
+    "requiredField": "This field is required",
+    "invalidEmail": "Enter a valid email address",
+    "shortPassword": "Password must be at least 8 characters"
+  },
+  "Dashboard": {
+    "title": "Your dashboard",
+    "welcomeBack": "Welcome back, {name}",
+    "continueReading": "Continue reading",
+    "noReadingTitle": "You haven't started reading yet",
+    "bookmarks": "Your bookmarks",
+    "noBookmarksTitle": "No bookmarks yet",
+    "noBookmarksDescription": "Bookmark verses while reading to find them here.",
+    "browseQuran": "Browse the Quran",
+    "bookmarkLabel": "Surah {surah} · Ayah {ayah}"
+  }
+}

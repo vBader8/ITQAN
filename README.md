@@ -56,6 +56,14 @@ need outbound network access to `api.quran.com`.
 
 ## Documentation
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the folder structure,
-key architectural decisions, and what's intentionally out of scope for this
-milestone.
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the folder structure
+and key architectural decisions, [docs/ROADMAP.md](docs/ROADMAP.md) for
+what's sequenced next, and [docs/adr/](docs/adr/) for the reasoning behind
+decisions that are easy to second-guess later.
+
+### Contributing
+
+Commits are validated against [Conventional
+Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`,
+etc.) via commitlint, and linted/formatted automatically pre-commit via
+Husky + lint-staged.

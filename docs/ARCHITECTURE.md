@@ -180,6 +180,27 @@ Anthropic → error handling) was verified end-to-end against the real
 Anthropic API using a deliberately invalid key, which correctly surfaced
 as a graceful error in the UI rather than a crash.
 
+### Platform foundations
+
+Three additions land ahead of the features that will need them, rather
+than being bolted on under pressure later:
+
+- **CI** (`.github/workflows/ci.yml`): lint, typecheck, unit tests, and
+  build run on every push and PR.
+- **Commit hygiene**: Husky + lint-staged run ESLint/Prettier on staged
+  files pre-commit; commitlint enforces Conventional Commits on the
+  commit message.
+- **RBAC foundation**: `profiles.role` (`member`/`moderator`/`scholar`/
+  `admin`, `supabase/migrations/0003_roles.sql`) plus a `has_role()` SQL
+  helper for future RLS policies. Nothing enforces roles yet — no
+  admin/moderation UI exists to need it — but the schema is in place so
+  those features don't require a breaking migration later.
+
+See [docs/adr/0001-content-architecture.md](adr/0001-content-architecture.md)
+for why Quran/Hadith/Tafsir are deliberately **not** routed through the
+same content workflow as authored content (Articles/Courses/Exams), and
+[docs/ROADMAP.md](ROADMAP.md) for what's sequenced next.
+
 ## Out of scope for this milestone
 
 - Vercel deployment (the app is deploy-ready; no live project was created

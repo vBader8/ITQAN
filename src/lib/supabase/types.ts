@@ -15,6 +15,7 @@ export interface Database {
           display_name: string | null;
           avatar_url: string | null;
           locale: string;
+          role: "member" | "moderator" | "scholar" | "admin";
           created_at: string;
           updated_at: string;
         };
@@ -23,11 +24,13 @@ export interface Database {
           display_name?: string | null;
           avatar_url?: string | null;
           locale?: string;
+          role?: "member" | "moderator" | "scholar" | "admin";
         };
         Update: {
           display_name?: string | null;
           avatar_url?: string | null;
           locale?: string;
+          role?: "member" | "moderator" | "scholar" | "admin";
         };
         Relationships: [];
       };

@@ -3,6 +3,7 @@ import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 import { ASSISTANT_SYSTEM_PROMPT } from "@/features/assistant/system-prompt";
 
 export const maxDuration = 30;
@@ -26,6 +27,7 @@ const requestBodySchema = z.object({
 
 export async function POST(request: Request) {
   if (!process.env.ANTHROPIC_API_KEY) {
+    logger.debug("assistant.not_configured");
     return NextResponse.json(
       { error: "assistant_not_configured" },
       { status: 503 },
@@ -40,6 +42,7 @@ export async function POST(request: Request) {
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   const { allowed } = checkRateLimit(ip, RATE_LIMIT);
   if (!allowed) {
+    logger.warn("assistant.rate_limited", { ip });
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
@@ -47,14 +50,29 @@ export async function POST(request: Request) {
     await request.json().catch(() => null),
   );
   if (!parsed.success) {
+    logger.warn("assistant.invalid_request", { issues: parsed.error.issues });
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
 
-  const result = streamText({
-    model: anthropic(MODEL_ID),
-    system: ASSISTANT_SYSTEM_PROMPT,
-    messages: await convertToModelMessages(parsed.data.messages as UIMessage[]),
-  });
+  try {
+    const result = streamText({
+      model: anthropic(MODEL_ID),
+      system: ASSISTANT_SYSTEM_PROMPT,
+      messages: await convertToModelMessages(
+        parsed.data.messages as UIMessage[],
+      ),
+      onError: ({ error }) => {
+        logger.error("assistant.generation_error", {
+          error: error instanceof Error ? error.message : String(error),
+        });
+      },
+    });
 
-  return result.toUIMessageStreamResponse();
+    return result.toUIMessageStreamResponse();
+  } catch (error) {
+    logger.error("assistant.request_error", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return NextResponse.json({ error: "internal_error" }, { status: 500 });
+  }
 }

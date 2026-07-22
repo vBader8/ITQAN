@@ -34,6 +34,7 @@ src/
                                 # by every content type (see ADR-0001)
     utils.ts                    # cn() class-merging helper
     rate-limit.ts                # in-memory limiter (used by the assistant route)
+    logger.ts                    # structured logging abstraction (see below)
   messages/en.json, ar.json     # translation catalogs
 supabase/migrations/            # SQL schema + RLS policies
 tests/unit/, tests/e2e/
@@ -208,6 +209,27 @@ this runs on multiple instances. The full request pipeline (UI → route →
 Anthropic → error handling) was verified end-to-end against the real
 Anthropic API using a deliberately invalid key, which correctly surfaced
 as a graceful error in the UI rather than a crash.
+
+### Structured logging
+
+`src/lib/logger.ts` is a thin abstraction over `console` — `logger.debug/
+info/warn/error(message, fields?)` — with one behavioral switch: readable
+`[LEVEL] message {fields}` text outside production, single-line JSON
+(`{level, message, timestamp, ...fields}`) in production, ready for a log
+aggregator to parse. `warn`/`error` route to `console.warn`/`console.error`
+so platform-level log filtering (e.g. a hosting provider's log viewer)
+still works even before a real provider is wired in.
+
+This exists so no code needs to import `console` directly for anything
+operationally meaningful — swapping in a real provider (Sentry, Axiom,
+Datadog) later means changing this one file, not every call site. Current
+call sites: `src/app/api/assistant/route.ts` (rate-limited requests,
+invalid request bodies, missing API key, and both request-level and
+mid-stream generation errors) and the three external content API clients
+(`features/{quran,hadith,tafsir}/api.ts`, which `warn` with the failing URL
+and status/validation issues before throwing their `*ApiError`) — so a
+degraded or unreachable upstream is visible server-side instead of only
+surfacing as a user-facing error state.
 
 ### Platform foundations
 

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 
 /**
  * Tafsir (Quranic exegesis) text, fetched from the Quran.com API at request
@@ -47,6 +48,7 @@ export async function getTafsir(
   const response = await fetch(url, { next: { revalidate: 60 * 60 * 24 } });
 
   if (!response.ok) {
+    logger.warn("tafsir_api.request_failed", { url, status: response.status });
     throw new TafsirApiError(
       `Tafsir API request failed with ${response.status}`,
     );
@@ -54,6 +56,10 @@ export async function getTafsir(
 
   const parsed = tafsirResponseSchema.safeParse(await response.json());
   if (!parsed.success) {
+    logger.warn("tafsir_api.unexpected_shape", {
+      url,
+      issues: parsed.error.issues,
+    });
     throw new TafsirApiError(
       "Tafsir API returned an unexpected response shape",
     );

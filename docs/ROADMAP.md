@@ -24,6 +24,14 @@ for the architectural split this roadmap is built around.
   replacing the per-type Quran/Hadith tables and proving the addressing
   pattern CMS-authored content will reuse — see
   [Architecture](ARCHITECTURE.md#unified-content-addressing)
+- **Structured logging**: a thin abstraction (`src/lib/logger.ts`) over
+  `console` — JSON in production, readable text in development — wired
+  into the AI Assistant route (rate limiting, invalid requests,
+  unconfigured key, generation/request errors) and all three external
+  content API clients (Quran, Hadith, Tafsir), so upstream failures and
+  request-handling errors are visible server-side instead of silent. Swap
+  in a real provider (e.g. Axiom/Sentry) later by changing this one file —
+  no call site imports `console` directly.
 
 ## Next
 
@@ -31,8 +39,6 @@ for the architectural split this roadmap is built around.
   Scholar Approval → Published → Archived, version history, rollback.
   Deliberately narrow scope first: get the workflow and data model right
   for one type before generalizing to Courses/Exams.
-- **Structured logging** — a thin abstraction over `console` now, swap in
-  a real provider (e.g. Axiom/Sentry) later without touching call sites.
 - Supabase project provisioning + Vercel deployment (blocked in this
   session on tool access; see session notes).
 

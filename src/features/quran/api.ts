@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 import type { Chapter, Verse } from "@/features/quran/types";
 
 /**
@@ -61,11 +62,16 @@ async function fetchJson<T>(url: string, schema: z.ZodType<T>): Promise<T> {
   });
 
   if (!response.ok) {
+    logger.warn("quran_api.request_failed", { url, status: response.status });
     throw new QuranApiError(`Quran API request failed with ${response.status}`);
   }
 
   const parsed = schema.safeParse(await response.json());
   if (!parsed.success) {
+    logger.warn("quran_api.unexpected_shape", {
+      url,
+      issues: parsed.error.issues,
+    });
     throw new QuranApiError("Quran API returned an unexpected response shape");
   }
 

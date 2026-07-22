@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 import type {
   Collection,
   Grade,
@@ -49,6 +50,7 @@ async function fetchJson<T>(
   const response = await fetch(url, { next: { revalidate } });
 
   if (!response.ok) {
+    logger.warn("hadith_api.request_failed", { url, status: response.status });
     throw new HadithApiError(
       `Hadith API request failed with ${response.status}`,
     );
@@ -56,6 +58,10 @@ async function fetchJson<T>(
 
   const parsed = schema.safeParse(await response.json());
   if (!parsed.success) {
+    logger.warn("hadith_api.unexpected_shape", {
+      url,
+      issues: parsed.error.issues,
+    });
     throw new HadithApiError(
       "Hadith API returned an unexpected response shape",
     );

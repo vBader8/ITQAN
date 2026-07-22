@@ -24,6 +24,9 @@ export async function SiteHeader() {
           <Button variant="ghost" size="sm" asChild>
             <Link href="/quran">{t("quran")}</Link>
           </Button>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/hadith">{t("hadith")}</Link>
+          </Button>
 
           <LocaleSwitcher />
 

@@ -6,6 +6,7 @@
   "Nav": {
     "home": "Home",
     "quran": "Quran",
+    "hadith": "Hadith",
     "dashboard": "Dashboard",
     "login": "Log in",
     "signup": "Sign up",
@@ -62,6 +63,20 @@
       "verse": "Verse {number}",
       "previousSurah": "Previous surah",
       "nextSurah": "Next surah"
+    }
+  },
+  "Hadith": {
+    "Collections": {
+      "title": "Hadith",
+      "subtitle": "Ten classical collections, in the original Arabic with English translation."
+    },
+    "Sections": {
+      "subtitle": "Choose a chapter to start reading."
+    },
+    "Reader": {
+      "showTranslation": "Show translation",
+      "hideTranslation": "Arabic only",
+      "gradedBy": "Graded by"
     }
   },
   "Tafsir": {

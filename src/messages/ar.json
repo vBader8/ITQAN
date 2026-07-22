@@ -6,6 +6,7 @@
   "Nav": {
     "home": "الرئيسية",
     "quran": "القرآن",
+    "hadith": "الحديث",
     "dashboard": "لوحتي",
     "login": "تسجيل الدخول",
     "signup": "إنشاء حساب",
@@ -62,6 +63,20 @@
       "verse": "الآية {number}",
       "previousSurah": "السورة السابقة",
       "nextSurah": "السورة التالية"
+    }
+  },
+  "Hadith": {
+    "Collections": {
+      "title": "الحديث",
+      "subtitle": "عشرة كتب حديثية أساسية، بالنص العربي مع الترجمة الإنجليزية."
+    },
+    "Sections": {
+      "subtitle": "اختر بابًا لبدء القراءة."
+    },
+    "Reader": {
+      "showTranslation": "إظهار الترجمة",
+      "hideTranslation": "العربية فقط",
+      "gradedBy": "درجة الحديث عند"
     }
   },
   "Tafsir": {

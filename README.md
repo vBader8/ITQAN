@@ -3,8 +3,8 @@
 A calm, premium Islamic learning platform — Quran, Tafsir, Hadith, Seerah,
 Fiqh, Aqeedah, learning paths, courses, and more. This repository currently
 contains the **foundation milestone**: the app shell, design system, auth,
-and a fully built Quran reader feature that every later feature builds on
-top of.
+and fully built Quran, Tafsir, and Hadith reading features that every later
+feature builds on top of.
 
 ## Stack
 
@@ -12,8 +12,10 @@ top of.
 - **Tailwind CSS v4** with a token-based design system (`src/design-system`)
 - **Supabase** for auth and user data (Postgres + Row Level Security)
 - **next-intl** for English/Arabic i18n with full RTL support
-- **Quran.com API** for Quran text and translations (not self-hosted — see
-  [Architecture](docs/ARCHITECTURE.md#quran-content))
+- **Quran.com API** for Quran text, tafsir, and translations (not
+  self-hosted — see [Architecture](docs/ARCHITECTURE.md#quran-content))
+- **fawazahmed0/hadith-api** for the ten classical hadith collections (see
+  [Architecture](docs/ARCHITECTURE.md#hadith))
 - **Vitest** + Testing Library for unit tests, **Playwright** for e2e
 
 ## Getting started
@@ -37,13 +39,13 @@ creates a `profiles` row on signup.
 
 ### Scripts
 
-| Command             | Purpose                                  |
-| -------------------- | ----------------------------------------- |
-| `npm run dev`        | Start the dev server (Turbopack)          |
-| `npm run build`      | Production build                          |
-| `npm run lint`       | ESLint                                    |
-| `npm run test`       | Unit tests (Vitest)                       |
-| `npm run test:e2e`   | End-to-end tests (Playwright)             |
+| Command            | Purpose                          |
+| ------------------ | -------------------------------- |
+| `npm run dev`      | Start the dev server (Turbopack) |
+| `npm run build`    | Production build                 |
+| `npm run lint`     | ESLint                           |
+| `npm run test`     | Unit tests (Vitest)              |
+| `npm run test:e2e` | End-to-end tests (Playwright)    |
 
 `test:e2e` includes tests that call the real Quran.com API and therefore
 need outbound network access to `api.quran.com`.

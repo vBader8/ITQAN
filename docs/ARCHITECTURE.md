@@ -8,6 +8,7 @@ src/
     (marketing)/             # public landing page
     (auth)/login, (auth)/signup
     (app)/dashboard, (app)/quran, (app)/quran/[surah]
+    (app)/hadith, (app)/hadith/[book], (app)/hadith/[book]/[section]
     layout.tsx                # the real root layout (html/body/fonts/providers)
   design-system/
     tokens.css                # color/spacing/radius/shadow/type tokens
@@ -17,6 +18,7 @@ src/
                                 # reads), actions.ts (our DB writes), components/
     tafsir/                     # api.ts (external content), actions.ts (lazy
                                 # per-ayah fetch), components/tafsir-panel.tsx
+    hadith/                     # api.ts (external content), types.ts, components/
     auth/                       # actions.ts (Supabase auth), components/
   components/layout/           # site header, locale switcher, user menu
   i18n/                         # next-intl routing/navigation/request config
@@ -69,6 +71,30 @@ tafsir-panel.tsx`) backed by a server action (`getTafsirAction`), with its
 own loading skeleton and inline retry on failure, mirroring the bookmark
 button's error handling.
 
+### Hadith
+
+`src/features/hadith/api.ts` fetches from the
+[fawazahmed0/hadith-api](https://github.com/fawazahmed0/hadith-api) project
+(same non-ownership rationale as Quran text). Its documented production
+endpoint is the jsDelivr CDN mirror
+(`cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1`); this sandbox's network
+policy blocks that domain, so `HADITH_API_BASE_URL` can point at a mock, or
+— as used to verify this feature during development — directly at
+`raw.githubusercontent.com/fawazahmed0/hadith-api/1`, which serves the
+identical repository content and happens to be reachable here. The exact
+response shape (field names like `hadithnumber`, `grades`, `reference`)
+was fetched and inspected live before writing any code, not assumed from
+memory, given how much more room there is for a subtly-wrong Hadith
+integration to misrepresent scholarship than a stable, well-known API.
+
+Ten classical collections are supported (Bukhari, Muslim, Abu Dawud,
+Tirmidhi, Nasai, Ibn Majah, Malik, and the three "Forty Hadith" works),
+each with English and Arabic editions. `getSectionHadiths` fetches both
+editions for a chapter in parallel and zips them by hadith number into one
+bilingual object, including any scholarly authenticity gradings
+(`grades: { scholar, grade }[]`) — displayed as-is, attributed per scholar,
+never collapsed into a single verdict our own code would be asserting.
+
 ### i18n and RTL
 
 English and Arabic are supported from the start via `next-intl`, with
@@ -118,7 +144,10 @@ reading" card can resume near where the user left off.
 
 - Vercel deployment (the app is deploy-ready; no live project was created
   yet — see the session notes for why).
-- Tafsir, Hadith, Seerah, Fiqh, Aqeedah, learning paths, AI assistant,
-  courses, exams, certificates, gamification, community, and the admin
-  portal — each is a focused milestone on top of this foundation, not an
-  extension bolted onto the Quran reader.
+- Seerah, Fiqh, Aqeedah, learning paths, AI assistant, courses, exams,
+  certificates, gamification, community, and the admin portal — each is a
+  focused milestone on top of this foundation, not an extension bolted onto
+  the Quran/Hadith readers.
+- Hadith bookmarking / reading progress (Quran already has both) — the same
+  `quran_bookmarks`/`quran_progress` pattern would need hadith-specific
+  tables once that's prioritized.

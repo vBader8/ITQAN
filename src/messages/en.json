@@ -7,6 +7,7 @@
     "home": "Home",
     "quran": "Quran",
     "hadith": "Hadith",
+    "assistant": "Assistant",
     "dashboard": "Dashboard",
     "login": "Log in",
     "signup": "Sign up",
@@ -81,6 +82,15 @@
       "bookmarked": "Bookmarked",
       "bookmarkRequiresAuth": "Log in to bookmark hadiths"
     }
+  },
+  "Assistant": {
+    "title": "Assistant",
+    "disclaimer": "An educational study aid, not a substitute for a qualified scholar. It won't issue religious rulings, and for exact Quran or Hadith wording, always check the Quran and Hadith sections of this app.",
+    "emptyState": "Ask about a concept, request a quiz, or paste a passage to review.",
+    "placeholder": "Ask a question…",
+    "error": "Something went wrong. Please try again.",
+    "notConfiguredTitle": "The assistant isn't set up yet",
+    "notConfiguredDescription": "An administrator needs to configure an API key before this feature is available."
   },
   "Tafsir": {
     "toggle": "Tafsir",

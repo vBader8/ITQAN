@@ -3,8 +3,9 @@
 A calm, premium Islamic learning platform — Quran, Tafsir, Hadith, Seerah,
 Fiqh, Aqeedah, learning paths, courses, and more. This repository currently
 contains the **foundation milestone**: the app shell, design system, auth,
-and fully built Quran, Tafsir, and Hadith reading features that every later
-feature builds on top of.
+fully built Quran/Tafsir/Hadith reading features (with bookmarks and
+reading progress) every later feature builds on top of, and an AI study
+assistant with built-in safety guardrails.
 
 ## Stack
 
@@ -16,6 +17,8 @@ feature builds on top of.
   self-hosted — see [Architecture](docs/ARCHITECTURE.md#quran-content))
 - **fawazahmed0/hadith-api** for the ten classical hadith collections (see
   [Architecture](docs/ARCHITECTURE.md#hadith))
+- **Vercel AI SDK + Anthropic** for the AI study assistant (see
+  [Architecture](docs/ARCHITECTURE.md#ai-assistant))
 - **Vitest** + Testing Library for unit tests, **Playwright** for e2e
 
 ## Getting started

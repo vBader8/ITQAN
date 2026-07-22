@@ -9,6 +9,8 @@ src/
     (auth)/login, (auth)/signup
     (app)/dashboard, (app)/quran, (app)/quran/[surah]
     (app)/hadith, (app)/hadith/[book], (app)/hadith/[book]/[section]
+    (app)/assistant
+    api/assistant/route.ts    # streaming chat route (outside [locale])
     layout.tsx                # the real root layout (html/body/fonts/providers)
   design-system/
     tokens.css                # color/spacing/radius/shadow/type tokens
@@ -19,6 +21,7 @@ src/
     tafsir/                     # api.ts (external content), actions.ts (lazy
                                 # per-ayah fetch), components/tafsir-panel.tsx
     hadith/                     # api.ts (external content), types.ts, components/
+    assistant/                  # system-prompt.ts, components/assistant-chat.tsx
     auth/                       # actions.ts (Supabase auth), components/
   components/layout/           # site header, locale switcher, user menu
   components/bookmark-toggle-button.tsx  # shared by Quran + Hadith
@@ -28,6 +31,7 @@ src/
     supabase/                   # server/client/middleware Supabase clients,
                                 # queries.ts (getCurrentUser — shared)
     utils.ts                    # cn() class-merging helper
+    rate-limit.ts                # in-memory limiter (used by the assistant route)
   messages/en.json, ar.json     # translation catalogs
 supabase/migrations/            # SQL schema + RLS policies
 tests/unit/, tests/e2e/
@@ -147,16 +151,44 @@ matching `profiles` row whenever a new `auth.users` row appears.
 
 ### Reading progress
 
-`src/features/quran/hooks/use-reading-progress.ts` uses an
-`IntersectionObserver` to track the highest verse scrolled into view and
-persists it (debounced, signed-in users only) so the dashboard's "continue
-reading" card can resume near where the user left off.
+`src/hooks/use-scroll-progress.ts` uses an `IntersectionObserver` to track
+the highest verse/hadith scrolled into view and persists it (debounced,
+signed-in users only) so the dashboard's "continue reading" card can
+resume near where the user left off. Shared by both the Quran and Hadith
+readers — see [Hadith](#hadith).
+
+### AI Assistant
+
+`src/app/api/assistant/route.ts` streams chat responses from Claude (via
+the Vercel AI SDK's `streamText` + `@ai-sdk/anthropic`) to
+`features/assistant/components/assistant-chat.tsx` (`useChat` from
+`@ai-sdk/react`). The system prompt
+(`features/assistant/system-prompt.ts`) enforces the platform's
+non-negotiable rule: it must not issue fatwas/rulings (it redirects those
+to a qualified scholar) and must not quote exact Quran/hadith wording from
+its own memory (it redirects to this app's own vetted Quran/Hadith
+sections instead) — both asserted by unit tests so a future edit can't
+silently weaken them.
+
+The route requires `ANTHROPIC_API_KEY`; without it, the assistant page
+renders a "not configured" empty state instead of the chat (verified in
+this sandbox, which has no key). A simple in-memory fixed-window rate
+limiter (`lib/rate-limit.ts`) throttles requests per IP — adequate for a
+single instance, not a substitute for a shared store (e.g. Redis) once
+this runs on multiple instances. The full request pipeline (UI → route →
+Anthropic → error handling) was verified end-to-end against the real
+Anthropic API using a deliberately invalid key, which correctly surfaced
+as a graceful error in the UI rather than a crash.
 
 ## Out of scope for this milestone
 
 - Vercel deployment (the app is deploy-ready; no live project was created
   yet — see the session notes for why).
-- Seerah, Fiqh, Aqeedah, learning paths, AI assistant, courses, exams,
-  certificates, gamification, community, and the admin portal — each is a
-  focused milestone on top of this foundation, not an extension bolted onto
-  the Quran/Hadith readers.
+- A real `ANTHROPIC_API_KEY` (the AI Assistant is built and wired but
+  can't be exercised end-to-end without one).
+- Seerah, Fiqh, Aqeedah, learning paths, courses, exams, certificates,
+  gamification, community, and the admin portal — each is a focused
+  milestone on top of this foundation, not an extension bolted onto the
+  Quran/Hadith readers. Seerah/Fiqh/Aqeedah in particular need a vetted
+  content source (like Quran.com and hadith-api) rather than
+  self-authored text, given the same accuracy concerns as Quran/Hadith.

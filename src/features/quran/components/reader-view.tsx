@@ -5,7 +5,8 @@ import { useTranslations } from "next-intl";
 import { Label } from "@/design-system/components/label";
 import { Switch } from "@/design-system/components/switch";
 import { Ayah } from "@/features/quran/components/ayah";
-import { useReadingProgress } from "@/features/quran/hooks/use-reading-progress";
+import { useScrollProgress } from "@/hooks/use-scroll-progress";
+import { saveProgressAction } from "@/features/quran/actions";
 import type { Verse } from "@/features/quran/types";
 
 export function ReaderView({
@@ -22,7 +23,13 @@ export function ReaderView({
   const t = useTranslations("Quran.Reader");
   const [showTranslation, setShowTranslation] = useState(true);
   const bookmarkedSet = new Set(bookmarkedAyahs);
-  const containerRef = useReadingProgress(surahNumber, isAuthenticated);
+  const containerRef = useScrollProgress({
+    attribute: "ayah-number",
+    isAuthenticated,
+    onProgress: (ayahNumber) => {
+      void saveProgressAction(surahNumber, ayahNumber);
+    },
+  });
 
   return (
     <div>

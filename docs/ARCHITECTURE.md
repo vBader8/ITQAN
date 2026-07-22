@@ -21,9 +21,12 @@ src/
     hadith/                     # api.ts (external content), types.ts, components/
     auth/                       # actions.ts (Supabase auth), components/
   components/layout/           # site header, locale switcher, user menu
+  components/bookmark-toggle-button.tsx  # shared by Quran + Hadith
+  hooks/use-scroll-progress.ts  # shared "continue reading" tracking
   i18n/                         # next-intl routing/navigation/request config
   lib/
-    supabase/                   # server/client/middleware Supabase clients
+    supabase/                   # server/client/middleware Supabase clients,
+                                # queries.ts (getCurrentUser — shared)
     utils.ts                    # cn() class-merging helper
   messages/en.json, ar.json     # translation catalogs
 supabase/migrations/            # SQL schema + RLS policies
@@ -95,6 +98,15 @@ bilingual object, including any scholarly authenticity gradings
 (`grades: { scholar, grade }[]`) — displayed as-is, attributed per scholar,
 never collapsed into a single verdict our own code would be asserting.
 
+Bookmarking and reading progress (`hadith_bookmarks`/`hadith_progress`,
+`supabase/migrations/0002_hadith.sql`) follow the exact same shape as
+`quran_bookmarks`/`quran_progress`, keyed by `(book, hadith_number)` since
+hadith numbers are unique within a whole collection, not just a section.
+The bookmark button and scroll-based progress tracking are shared with
+the Quran reader (`components/bookmark-toggle-button.tsx`,
+`hooks/use-scroll-progress.ts`) rather than duplicated — each feature
+supplies its own server action and copy, the interaction logic lives once.
+
 ### i18n and RTL
 
 English and Arabic are supported from the start via `next-intl`, with
@@ -148,6 +160,3 @@ reading" card can resume near where the user left off.
   certificates, gamification, community, and the admin portal — each is a
   focused milestone on top of this foundation, not an extension bolted onto
   the Quran/Hadith readers.
-- Hadith bookmarking / reading progress (Quran already has both) — the same
-  `quran_bookmarks`/`quran_progress` pattern would need hadith-specific
-  tables once that's prioritized.

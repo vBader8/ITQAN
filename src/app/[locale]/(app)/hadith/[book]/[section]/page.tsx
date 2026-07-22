@@ -5,6 +5,8 @@ import {
   getSectionHadiths,
   getSections,
 } from "@/features/hadith/api";
+import { getBookmarkedHadiths } from "@/features/hadith/queries";
+import { getCurrentUser } from "@/lib/supabase/queries";
 import { HadithReader } from "@/features/hadith/components/hadith-reader";
 import type { Locale } from "@/i18n/routing";
 
@@ -33,7 +35,11 @@ export default async function HadithSectionPage({
     notFound();
   }
 
-  const hadiths = await getSectionHadiths(book, sectionNumber);
+  const [hadiths, bookmarkedHadiths, user] = await Promise.all([
+    getSectionHadiths(book, sectionNumber),
+    getBookmarkedHadiths(book),
+    getCurrentUser(),
+  ]);
 
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-4 py-10 sm:px-6">
@@ -43,7 +49,13 @@ export default async function HadithSectionPage({
           {sectionInfo.name}
         </h1>
       </div>
-      <HadithReader hadiths={hadiths} />
+      <HadithReader
+        book={book}
+        sectionNumber={sectionNumber}
+        hadiths={hadiths}
+        bookmarkedHadiths={Array.from(bookmarkedHadiths)}
+        isAuthenticated={Boolean(user)}
+      />
     </div>
   );
 }

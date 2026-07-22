@@ -76,7 +76,10 @@
     "Reader": {
       "showTranslation": "Show translation",
       "hideTranslation": "Arabic only",
-      "gradedBy": "Graded by"
+      "gradedBy": "Graded by",
+      "bookmark": "Bookmark this hadith",
+      "bookmarked": "Bookmarked",
+      "bookmarkRequiresAuth": "Log in to bookmark hadiths"
     }
   },
   "Tafsir": {
@@ -103,6 +106,7 @@
     "noBookmarksTitle": "No bookmarks yet",
     "noBookmarksDescription": "Bookmark verses while reading to find them here.",
     "browseQuran": "Browse the Quran",
-    "bookmarkLabel": "Surah {surah} · Ayah {ayah}"
+    "bookmarkLabel": "Surah {surah} · Ayah {ayah}",
+    "hadithBookmarkLabel": "{collection} · Hadith {number}"
   }
 }

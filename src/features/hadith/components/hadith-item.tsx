@@ -1,19 +1,31 @@
 import { useTranslations } from "next-intl";
 import { Badge } from "@/design-system/components/badge";
 import { Separator } from "@/design-system/components/separator";
+import { BookmarkButton } from "@/features/hadith/components/bookmark-button";
 import type { Hadith } from "@/features/hadith/types";
 
 export function HadithItem({
   hadith,
+  book,
+  sectionNumber,
   showTranslation,
+  isBookmarked,
+  isAuthenticated,
 }: {
   hadith: Hadith;
+  book: string;
+  sectionNumber: number;
   showTranslation: boolean;
+  isBookmarked: boolean;
+  isAuthenticated: boolean;
 }) {
   const t = useTranslations("Hadith.Reader");
 
   return (
-    <article className="flex flex-col gap-3 py-6">
+    <article
+      data-hadith-number={hadith.hadithNumber}
+      className="flex flex-col gap-3 py-6"
+    >
       <div className="flex items-start justify-between gap-4">
         <span className="bg-accent text-accent-foreground mt-1 flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-medium">
           {hadith.hadithNumber}
@@ -25,6 +37,13 @@ export function HadithItem({
         >
           {hadith.textArabic}
         </p>
+        <BookmarkButton
+          book={book}
+          sectionNumber={sectionNumber}
+          hadithNumber={hadith.hadithNumber}
+          initialBookmarked={isBookmarked}
+          isAuthenticated={isAuthenticated}
+        />
       </div>
 
       {showTranslation && (

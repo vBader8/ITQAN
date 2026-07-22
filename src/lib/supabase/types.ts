@@ -88,6 +88,67 @@ export interface Database {
           },
         ];
       };
+      hadith_bookmarks: {
+        Row: {
+          id: string;
+          user_id: string;
+          book: string;
+          section_number: number;
+          hadith_number: number;
+          note: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          book: string;
+          section_number: number;
+          hadith_number: number;
+          note?: string | null;
+        };
+        Update: {
+          note?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "hadith_bookmarks_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      hadith_progress: {
+        Row: {
+          id: string;
+          user_id: string;
+          book: string;
+          last_section_number: number;
+          last_hadith_number: number;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          book: string;
+          last_section_number: number;
+          last_hadith_number: number;
+        };
+        Update: {
+          last_section_number?: number;
+          last_hadith_number?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "hadith_progress_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

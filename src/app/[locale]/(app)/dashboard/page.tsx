@@ -12,9 +12,14 @@ import { Button } from "@/design-system/components/button";
 import { getChapter } from "@/features/quran/api";
 import {
   getContinueReading,
-  getCurrentUser,
   getRecentBookmarks,
 } from "@/features/quran/queries";
+import { getCollections } from "@/features/hadith/api";
+import {
+  getHadithContinueReading,
+  getRecentHadithBookmarks,
+} from "@/features/hadith/queries";
+import { getCurrentUser } from "@/lib/supabase/queries";
 import type { Locale } from "@/i18n/routing";
 
 export default async function DashboardPage({
@@ -31,14 +36,70 @@ export default async function DashboardPage({
   }
 
   const t = await getTranslations("Dashboard");
-  const [continueReading, bookmarks] = await Promise.all([
+  const [
+    quranProgress,
+    quranBookmarks,
+    hadithProgress,
+    hadithBookmarks,
+    hadithCollections,
+  ] = await Promise.all([
     getContinueReading(),
     getRecentBookmarks(),
+    getHadithContinueReading(),
+    getRecentHadithBookmarks(),
+    getCollections(),
   ]);
 
-  const continueReadingChapter = continueReading
-    ? await getChapter(continueReading.surahNumber)
+  const quranChapter = quranProgress
+    ? await getChapter(quranProgress.surahNumber)
     : null;
+  const hadithCollection = hadithProgress
+    ? hadithCollections.find((c) => c.slug === hadithProgress.book)
+    : null;
+
+  const continueReadingItems = [
+    quranChapter && quranProgress
+      ? {
+          key: "quran",
+          href: `/quran/${quranProgress.surahNumber}`,
+          title: quranChapter.translatedName,
+          subtitle: quranChapter.nameArabic,
+        }
+      : null,
+    hadithCollection && hadithProgress
+      ? {
+          key: "hadith",
+          href: `/hadith/${hadithProgress.book}/${hadithProgress.sectionNumber}`,
+          title: hadithCollection.name,
+          subtitle: hadithCollection.nameArabic,
+        }
+      : null,
+  ].filter((item) => item !== null);
+
+  const bookmarkItems = [
+    ...quranBookmarks.map((bookmark) => ({
+      key: `quran-${bookmark.surahNumber}-${bookmark.ayahNumber}`,
+      href: `/quran/${bookmark.surahNumber}`,
+      label: t("bookmarkLabel", {
+        surah: bookmark.surahNumber,
+        ayah: bookmark.ayahNumber,
+      }),
+      createdAt: bookmark.createdAt,
+    })),
+    ...hadithBookmarks.map((bookmark) => ({
+      key: `hadith-${bookmark.book}-${bookmark.hadithNumber}`,
+      href: `/hadith/${bookmark.book}/${bookmark.sectionNumber}`,
+      label: t("hadithBookmarkLabel", {
+        collection:
+          hadithCollections.find((c) => c.slug === bookmark.book)?.name ??
+          bookmark.book,
+        number: bookmark.hadithNumber,
+      }),
+      createdAt: bookmark.createdAt,
+    })),
+  ]
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 5);
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6">
@@ -54,24 +115,7 @@ export default async function DashboardPage({
           <CardTitle>{t("continueReading")}</CardTitle>
         </CardHeader>
         <CardContent>
-          {continueReadingChapter && continueReading ? (
-            <Link
-              href={`/quran/${continueReading.surahNumber}`}
-              className="hover:bg-secondary -m-2 flex items-center gap-3 rounded-md p-2 transition-colors"
-            >
-              <span className="bg-accent text-accent-foreground flex size-10 items-center justify-center rounded-full">
-                <BookOpen className="size-5" aria-hidden="true" />
-              </span>
-              <span className="flex flex-col">
-                <span className="font-medium">
-                  {continueReadingChapter.translatedName}
-                </span>
-                <span className="text-muted-foreground text-sm">
-                  {continueReadingChapter.nameArabic}
-                </span>
-              </span>
-            </Link>
-          ) : (
+          {continueReadingItems.length === 0 ? (
             <EmptyState
               icon={<BookOpen className="size-6" aria-hidden="true" />}
               title={t("noReadingTitle")}
@@ -81,6 +125,27 @@ export default async function DashboardPage({
                 </Button>
               }
             />
+          ) : (
+            <ul className="flex flex-col gap-1">
+              {continueReadingItems.map((item) => (
+                <li key={item.key}>
+                  <Link
+                    href={item.href}
+                    className="hover:bg-secondary -m-2 flex items-center gap-3 rounded-md p-2 transition-colors"
+                  >
+                    <span className="bg-accent text-accent-foreground flex size-10 items-center justify-center rounded-full">
+                      <BookOpen className="size-5" aria-hidden="true" />
+                    </span>
+                    <span className="flex flex-col">
+                      <span className="font-medium">{item.title}</span>
+                      <span className="text-muted-foreground text-sm">
+                        {item.subtitle}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           )}
         </CardContent>
       </Card>
@@ -90,7 +155,7 @@ export default async function DashboardPage({
           <CardTitle>{t("bookmarks")}</CardTitle>
         </CardHeader>
         <CardContent>
-          {bookmarks.length === 0 ? (
+          {bookmarkItems.length === 0 ? (
             <EmptyState
               icon={<BookMarked className="size-6" aria-hidden="true" />}
               title={t("noBookmarksTitle")}
@@ -103,20 +168,17 @@ export default async function DashboardPage({
             />
           ) : (
             <ul className="flex flex-col gap-2">
-              {bookmarks.map((bookmark) => (
-                <li key={`${bookmark.surahNumber}-${bookmark.ayahNumber}`}>
+              {bookmarkItems.map((bookmark) => (
+                <li key={bookmark.key}>
                   <Link
-                    href={`/quran/${bookmark.surahNumber}`}
+                    href={bookmark.href}
                     className="hover:bg-secondary -m-2 flex items-center gap-2 rounded-md p-2 text-sm transition-colors"
                   >
                     <BookMarked
                       className="text-primary size-4"
                       aria-hidden="true"
                     />
-                    {t("bookmarkLabel", {
-                      surah: bookmark.surahNumber,
-                      ayah: bookmark.ayahNumber,
-                    })}
+                    {bookmark.label}
                   </Link>
                 </li>
               ))}

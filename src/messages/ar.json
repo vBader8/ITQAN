@@ -76,7 +76,10 @@
     "Reader": {
       "showTranslation": "إظهار الترجمة",
       "hideTranslation": "العربية فقط",
-      "gradedBy": "درجة الحديث عند"
+      "gradedBy": "درجة الحديث عند",
+      "bookmark": "أضف إشارة مرجعية لهذا الحديث",
+      "bookmarked": "تمت الإضافة",
+      "bookmarkRequiresAuth": "سجّل الدخول لإضافة إشارات مرجعية"
     }
   },
   "Tafsir": {
@@ -103,6 +106,7 @@
     "noBookmarksTitle": "لا توجد إشارات مرجعية بعد",
     "noBookmarksDescription": "أضف إشارات مرجعية للآيات أثناء القراءة لتجدها هنا.",
     "browseQuran": "تصفّح القرآن",
-    "bookmarkLabel": "سورة {surah} · آية {ayah}"
+    "bookmarkLabel": "سورة {surah} · آية {ayah}",
+    "hadithBookmarkLabel": "{collection} · حديث {number}"
   }
 }

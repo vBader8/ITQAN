@@ -2,26 +2,30 @@
 
 import { useTranslations } from "next-intl";
 import { BookmarkToggleButton } from "@/components/bookmark-toggle-button";
-import { toggleBookmarkAction } from "@/features/quran/actions";
+import { toggleHadithBookmarkAction } from "@/features/hadith/actions";
 
 export function BookmarkButton({
-  surahNumber,
-  ayahNumber,
+  book,
+  sectionNumber,
+  hadithNumber,
   initialBookmarked,
   isAuthenticated,
 }: {
-  surahNumber: number;
-  ayahNumber: number;
+  book: string;
+  sectionNumber: number;
+  hadithNumber: number;
   initialBookmarked: boolean;
   isAuthenticated: boolean;
 }) {
-  const t = useTranslations("Quran.Reader");
+  const t = useTranslations("Hadith.Reader");
 
   return (
     <BookmarkToggleButton
       initialBookmarked={initialBookmarked}
       isAuthenticated={isAuthenticated}
-      onToggle={() => toggleBookmarkAction(surahNumber, ayahNumber)}
+      onToggle={() =>
+        toggleHadithBookmarkAction(book, sectionNumber, hadithNumber)
+      }
       bookmarkLabel={t("bookmark")}
       bookmarkedLabel={t("bookmarked")}
       authRequiredMessage={t("bookmarkRequiresAuth")}

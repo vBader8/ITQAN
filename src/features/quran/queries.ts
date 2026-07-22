@@ -1,24 +1,16 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/queries";
 
-export async function getCurrentUser() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return user;
-}
+export { getCurrentUser };
 
 export async function getBookmarkedAyahs(
   surahNumber: number,
 ): Promise<Set<number>> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const user = await getCurrentUser();
   if (!user) return new Set();
 
+  const supabase = await createClient();
   const { data } = await supabase
     .from("quran_bookmarks")
     .select("ayah_number")
@@ -34,13 +26,10 @@ export interface ContinueReading {
 }
 
 export async function getContinueReading(): Promise<ContinueReading | null> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const user = await getCurrentUser();
   if (!user) return null;
 
+  const supabase = await createClient();
   const { data } = await supabase
     .from("quran_progress")
     .select("surah_number, last_ayah_number")
@@ -66,13 +55,10 @@ export interface BookmarkWithSurah {
 export async function getRecentBookmarks(
   limit = 5,
 ): Promise<BookmarkWithSurah[]> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const user = await getCurrentUser();
   if (!user) return [];
 
+  const supabase = await createClient();
   const { data } = await supabase
     .from("quran_bookmarks")
     .select("surah_number, ayah_number, created_at")

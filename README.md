@@ -33,9 +33,10 @@ Open [http://localhost:3000](http://localhost:3000) — it redirects to
 
 Apply the migrations in `supabase/migrations/` to your Supabase project
 (via the Supabase CLI, dashboard SQL editor, or the `apply_migration` MCP
-tool). They create `profiles`, `quran_bookmarks`, and `quran_progress`,
-each with Row Level Security scoped to the owning user, plus a trigger that
-creates a `profiles` row on signup.
+tool), in order. They create `profiles`, `quran_bookmarks`/`quran_progress`,
+and `hadith_bookmarks`/`hadith_progress`, each with Row Level Security
+scoped to the owning user, plus a trigger that creates a `profiles` row on
+signup.
 
 ### Scripts
 

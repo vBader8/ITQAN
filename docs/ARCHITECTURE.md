@@ -29,7 +29,9 @@ src/
   i18n/                         # next-intl routing/navigation/request config
   lib/
     supabase/                   # server/client/middleware Supabase clients,
-                                # queries.ts (getCurrentUser — shared)
+                                # queries.ts (getCurrentUser/getCurrentUserRole)
+    content/                    # generic bookmark/progress data layer, shared
+                                # by every content type (see ADR-0001)
     utils.ts                    # cn() class-merging helper
     rate-limit.ts                # in-memory limiter (used by the assistant route)
   messages/en.json, ar.json     # translation catalogs
@@ -102,12 +104,12 @@ bilingual object, including any scholarly authenticity gradings
 (`grades: { scholar, grade }[]`) — displayed as-is, attributed per scholar,
 never collapsed into a single verdict our own code would be asserting.
 
-Bookmarking and reading progress (`hadith_bookmarks`/`hadith_progress`,
-`supabase/migrations/0002_hadith.sql`) follow the exact same shape as
-`quran_bookmarks`/`quran_progress`, keyed by `(book, hadith_number)` since
-hadith numbers are unique within a whole collection, not just a section.
-The bookmark button and scroll-based progress tracking are shared with
-the Quran reader (`components/bookmark-toggle-button.tsx`,
+Bookmarking and reading progress are backed by the generic content layer
+(see [Unified content addressing](#unified-content-addressing)) rather
+than a Hadith-specific table, keyed by `book:hadith_number` since hadith
+numbers are unique within a whole collection, not just a section. The
+bookmark button and scroll-based progress tracking are shared with the
+Quran reader (`components/bookmark-toggle-button.tsx`,
 `hooks/use-scroll-progress.ts`) rather than duplicated — each feature
 supplies its own server action and copy, the interaction logic lives once.
 
@@ -156,6 +158,33 @@ the highest verse/hadith scrolled into view and persists it (debounced,
 signed-in users only) so the dashboard's "continue reading" card can
 resume near where the user left off. Shared by both the Quran and Hadith
 readers — see [Hadith](#hadith).
+
+### Unified content addressing
+
+Per ADR-0001, `content_bookmarks` and `content_progress`
+(`supabase/migrations/0004_unify_content_bookmarks.sql`) replace what were
+originally separate `quran_bookmarks`/`quran_progress` and
+`hadith_bookmarks`/`hadith_progress` tables. Both are addressed by a
+`(content_type, content_key)` pair plus a `data jsonb` column for whatever
+else that content type needs (e.g. a hadith bookmark's `data` carries its
+section number, since a hadith number alone doesn't say which chapter it's
+in):
+
+| content_type | content_key                                                   | data                                                            |
+| ------------ | ------------------------------------------------------------- | --------------------------------------------------------------- |
+| `quran_ayah` | `"{surah}:{ayah}"`                                            | _(bookmarks only)_                                              |
+| `quran`      | `"{surah}"`                                                   | `{ lastAyahNumber }` _(progress only)_                          |
+| `hadith`     | `"{book}:{hadithNumber}"` (bookmarks) / `"{book}"` (progress) | `{ sectionNumber }` / `{ lastSectionNumber, lastHadithNumber }` |
+
+`src/lib/content/{types,actions,queries}.ts` is the only code that queries
+these tables directly. `features/quran/{actions,queries}.ts` and
+`features/hadith/{actions,queries}.ts` are thin translation wrappers that
+keep their original exported function names and shapes
+(`toggleBookmarkAction`, `getContinueReading`, `getRecentHadithBookmarks`,
+etc.) — every call site (dashboard, reader components) was unaffected by
+this migration; only the storage underneath changed. This is the pattern
+future content types (CMS-authored Articles/Courses included) will reuse
+instead of a fifth bespoke pair of tables.
 
 ### AI Assistant
 

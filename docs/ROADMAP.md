@@ -19,14 +19,14 @@ for the architectural split this roadmap is built around.
 - RBAC foundation: `profiles.role` (`member`/`moderator`/`scholar`/`admin`)
   and a `has_role()` SQL helper — not yet enforced anywhere; lands with the
   features below that actually need it
+- **Unified content addressing**: generic `content_bookmarks`/
+  `content_progress` tables keyed by `(content_type, content_key)`,
+  replacing the per-type Quran/Hadith tables and proving the addressing
+  pattern CMS-authored content will reuse — see
+  [Architecture](ARCHITECTURE.md#unified-content-addressing)
 
 ## Next
 
-- **Unified content addressing**: generic `content_bookmarks`/
-  `content_progress` tables keyed by `(content_type, content_key)`,
-  replacing the per-type Quran/Hadith tables. Proves the addressing
-  pattern every future content type (including CMS-authored content) will
-  use, and removes real duplication.
 - **CMS v1** for one authored content type (Articles) — Draft → Review →
   Scholar Approval → Published → Archived, version history, rollback.
   Deliberately narrow scope first: get the workflow and data model right

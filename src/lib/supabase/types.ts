@@ -6,6 +6,14 @@
  * @supabase/postgrest-js's generics require (Tables/Views/Functions,
  * Relationships on every table).
  */
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
 export interface Database {
   public: {
     Tables: {
@@ -34,28 +42,31 @@ export interface Database {
         };
         Relationships: [];
       };
-      quran_bookmarks: {
+      content_bookmarks: {
         Row: {
           id: string;
           user_id: string;
-          surah_number: number;
-          ayah_number: number;
+          content_type: "quran_ayah" | "hadith";
+          content_key: string;
+          data: Json;
           note: string | null;
           created_at: string;
         };
         Insert: {
           id?: string;
           user_id: string;
-          surah_number: number;
-          ayah_number: number;
+          content_type: "quran_ayah" | "hadith";
+          content_key: string;
+          data?: Json;
           note?: string | null;
         };
         Update: {
+          data?: Json;
           note?: string | null;
         };
         Relationships: [
           {
-            foreignKeyName: "quran_bookmarks_user_id_fkey";
+            foreignKeyName: "content_bookmarks_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "profiles";
@@ -63,88 +74,28 @@ export interface Database {
           },
         ];
       };
-      quran_progress: {
+      content_progress: {
         Row: {
           id: string;
           user_id: string;
-          surah_number: number;
-          last_ayah_number: number;
+          content_type: "quran" | "hadith";
+          content_key: string;
+          data: Json;
           updated_at: string;
         };
         Insert: {
           id?: string;
           user_id: string;
-          surah_number: number;
-          last_ayah_number: number;
+          content_type: "quran" | "hadith";
+          content_key: string;
+          data?: Json;
         };
         Update: {
-          surah_number?: number;
-          last_ayah_number?: number;
+          data?: Json;
         };
         Relationships: [
           {
-            foreignKeyName: "quran_progress_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      hadith_bookmarks: {
-        Row: {
-          id: string;
-          user_id: string;
-          book: string;
-          section_number: number;
-          hadith_number: number;
-          note: string | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          book: string;
-          section_number: number;
-          hadith_number: number;
-          note?: string | null;
-        };
-        Update: {
-          note?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "hadith_bookmarks_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      hadith_progress: {
-        Row: {
-          id: string;
-          user_id: string;
-          book: string;
-          last_section_number: number;
-          last_hadith_number: number;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          book: string;
-          last_section_number: number;
-          last_hadith_number: number;
-        };
-        Update: {
-          last_section_number?: number;
-          last_hadith_number?: number;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "hadith_progress_user_id_fkey";
+            foreignKeyName: "content_progress_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "profiles";

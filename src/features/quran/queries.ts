@@ -1,23 +1,26 @@
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import {
+  getBookmarkedContentKeys,
+  getLatestContentProgress,
+  getRecentContentBookmarks,
+} from "@/lib/content/queries";
 import { getCurrentUser } from "@/lib/supabase/queries";
 
 export { getCurrentUser };
 
+function parseAyahKey(key: string): {
+  surahNumber: number;
+  ayahNumber: number;
+} {
+  const [surah, ayah] = key.split(":");
+  return { surahNumber: Number(surah), ayahNumber: Number(ayah) };
+}
+
 export async function getBookmarkedAyahs(
   surahNumber: number,
 ): Promise<Set<number>> {
-  const user = await getCurrentUser();
-  if (!user) return new Set();
-
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("quran_bookmarks")
-    .select("ayah_number")
-    .eq("user_id", user.id)
-    .eq("surah_number", surahNumber);
-
-  return new Set((data ?? []).map((row) => row.ayah_number));
+  const keys = await getBookmarkedContentKeys("quran_ayah", `${surahNumber}:`);
+  return new Set(Array.from(keys).map((key) => parseAyahKey(key).ayahNumber));
 }
 
 export interface ContinueReading {
@@ -26,23 +29,12 @@ export interface ContinueReading {
 }
 
 export async function getContinueReading(): Promise<ContinueReading | null> {
-  const user = await getCurrentUser();
-  if (!user) return null;
-
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("quran_progress")
-    .select("surah_number, last_ayah_number")
-    .eq("user_id", user.id)
-    .order("updated_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (!data) return null;
+  const progress = await getLatestContentProgress("quran");
+  if (!progress) return null;
 
   return {
-    surahNumber: data.surah_number,
-    lastAyahNumber: data.last_ayah_number,
+    surahNumber: Number(progress.contentKey),
+    lastAyahNumber: Number(progress.data.lastAyahNumber),
   };
 }
 
@@ -55,20 +47,9 @@ export interface BookmarkWithSurah {
 export async function getRecentBookmarks(
   limit = 5,
 ): Promise<BookmarkWithSurah[]> {
-  const user = await getCurrentUser();
-  if (!user) return [];
-
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("quran_bookmarks")
-    .select("surah_number, ayah_number, created_at")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(limit);
-
-  return (data ?? []).map((row) => ({
-    surahNumber: row.surah_number,
-    ayahNumber: row.ayah_number,
-    createdAt: row.created_at,
+  const bookmarks = await getRecentContentBookmarks("quran_ayah", limit);
+  return bookmarks.map((bookmark) => ({
+    ...parseAyahKey(bookmark.contentKey),
+    createdAt: bookmark.createdAt,
   }));
 }
